@@ -1,0 +1,110 @@
+<h1>Photo Details</h1>
+
+<dl>
+  <dt>Image</dt>
+  <dd>
+    <img src="<%= @the_photo.image %>">
+  </dd>
+
+  <dt>Caption</dt>
+  <dd>
+    <%= @the_photo.caption %>
+  </dd>
+
+  <dt>Owner</dt>
+  <dd>
+    <%= @the_photo.owner.username %>
+  </dd>
+
+  <dt>Posted</dt>
+  <dd>
+    <%= time_ago_in_words(@the_photo.created_at) %> ago
+  </dd>
+
+  <dt>Likes count</dt>
+  <dd>
+    <%= @the_photo.likes_count %>
+  </dd>
+  <dt>Comments count</dt>
+  <dd><%= @the_photo.comments_count %></dd>
+
+  <dt>Fans</dt>
+  <dd>
+     <%= @the_photo.fans.map{ |other_user| other_user.username}.join(", ") %>
+  </dd>
+
+  <dt>Add a fan</dt>
+  <dd>
+  <% if @the_photo.fans.include? @current_user %>
+      <a href="/delete_like/<%= @the_photo.get_user_like(@current_user.id).id %>">
+        Unlike
+      </a>
+  <% else %>
+
+    <form action="/insert_like" method="post">
+      <input type="hidden" value="<%= @the_photo.id %>" name="query_photo_id">
+      <button>Like</button>
+    </form>
+  
+  <% end %>
+  </dd>
+
+  <% if @current_user.id == @the_photo.owner_id %>
+  <dt>Edit photo</dt>
+  <dd>
+    <form action="/modify_photo/<%= @the_photo.id %>" method="post" enctype="multipart/form-data">
+      <label for="browser_image">Image URL</label>
+      <input id="browser_image" type="file" name="query_image" placeholder="Enter a URL for the image..." value="http://res-4.cloudinary.com/dt1gn6erd/image/upload/v1622405538/tzcau2l9mxa4bkrkduzb.png">
+    
+      <label for="browser_caption">Caption</label>
+      <textarea id="browser_caption" name="query_caption" placeholder="Enter a caption for the photo...">Zdfasdf</textarea>
+    
+      <button>Update photo</button>
+    </form>
+  </dd>
+
+  <dt>Delete photo</dt>
+  <dd>
+    <a href="/delete_photo/<%= @the_photo.id %>">
+      Delete this photo
+    </a>
+  </dd>
+</dl>
+
+<% end %>
+
+<h2>Comments</h2>
+
+<table>
+  <tr>
+    <th>Commenter</th>
+    <th>Comment</th>
+    <th>Posted</th>
+  </tr>
+  <% @the_photo.comments.each do | comment| %>
+    <tr>
+      <td>
+        <%= comment.commenter.username %>
+      </td>
+
+      <td>
+        <%= comment.body %>
+      </td>
+
+      <td>
+        <%= time_ago_in_words(comment.created_at) %> ago
+      </td>
+    </tr>  
+    <% end %>
+</table>
+
+<h3>Add a new comment</h3>
+
+<form action="/insert_comment" method="post">
+  <input type="hidden" value="<%= @the_photo.id %>" name="query_photo_id">
+  
+  <label for="browser_comment">Comment</label>
+  <textarea id="browser_comment" name="query_body" placeholder="Enter a comment..."></textarea>
+
+  <button>Add comment</button>
+</form>

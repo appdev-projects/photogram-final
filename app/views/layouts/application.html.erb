@@ -14,6 +14,44 @@
     <%= stylesheet_link_tag    'application', media: 'all' %>
   </head>
 
+    <nav>
+    <% session_user_id = session.fetch(:user_id) %>
+        <ul>
+          <li>
+            <a href="/users">All Users</a>
+          </li>
+          <li>
+            <a href="/photos">All public photos</a>
+          </li>
+          <% if not session_user_id %>
+            <li>
+              <a href="/user_sign_in">Sign In</a>
+            </li>
+            
+            <li>
+              <a href="/user_sign_up">Sign Up</a>
+            </li>
+          <% else %>
+            <li>
+              <a href="/edit_user_profile"><%= User.where( :id => session.fetch(:user_id)).at(0).username %></a>
+            </li>
+            <li>
+              <a href="/user_sign_out">Sign Out</a>
+            </li>
+          <% end %>
+      </ul>
+    <% if alert.present? %>
+      <div>
+        <%= alert %>
+      </div>
+    <% end %>
+    </nav>
+    <% if notice.present? %>
+      <div>
+        <%= notice %>
+      </div>
+    <% end %>
+    </nav>
   <body>
     <%= yield %>
   </body>

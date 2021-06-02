@@ -1,0 +1,54 @@
+<h1>List of photos</h1>
+
+<form action="/insert_photo" method="post" enctype="multipart/form-data">
+  <label for="image">Image</label>
+  <input id="image" type="file" name="image" class="form-control" placeholder="Enter a URL for the image...">
+
+  <label for="browser_caption">Caption</label>
+  <textarea id="browser_caption" name="query_caption" placeholder="Enter a caption for the photo..."></textarea>
+
+  <button>Add photo</button>
+</form>
+
+<hr>
+
+
+<table border="1">
+  <tr>
+    <th>Image</th>
+    <th>Caption</th>
+    <th>Owner</th>
+    <th>Posted</th>
+    <th>Likes</th>
+    <th></th>
+  </tr>
+  <% User.where({:private => false}).map{ |other_user| other_user.own_photos}.flatten.each do |photo| %>
+    <tr>
+      <td>
+        <img src="<%= photo.image %>">
+      </td>
+    
+      <td>
+        <%= photo.caption %>
+      </td>
+    
+      <td>
+        <%= photo.owner.username %>
+      </td>
+    
+      <td>
+        <%= time_ago_in_words(photo.created_at) %> ago
+      </td>
+    
+      <td>
+        <%= photo.likes_count %>
+      </td>
+    
+      <td>
+        <a href="/photos/<%= photo.id %>">
+          Show details
+        </a>
+      </td>
+    </tr>
+    <% end %>
+</table>

@@ -58,7 +58,7 @@ task({ :sample_data => :environment}) do
 
   if User.method_defined?(:password) || User.has_attribute?(:password_digest)
     User.all.each do |user|
-      user.password = "password"
+      user.password = "appdev"
       user.save
     end
     puts "Found a password column. Added passwords."
